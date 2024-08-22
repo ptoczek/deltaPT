@@ -1,6 +1,6 @@
 #include "functions.h"
 
-// evolution of the Universe on average, returns {kmax,tkmax}
+// evolution of the Universe on average, returns {kmax, tkmax, tmax}
 vector<double> averageevolution(function<double(double)> Gamma, const double tmin, const int jtmax, const double dt, vector<vector<double> > &Ft, vector<vector<double> > &taut, vector<vector<double> > &at, vector<vector<double> > &Ht) {
     
     // initial state in vacuum dominance:
@@ -9,7 +9,8 @@ vector<double> averageevolution(function<double(double)> Gamma, const double tmi
     
     double H = 1.0, F = 1.0, F0 = 1.0;
     vector<double> tmp(2);
-    double Nt, kmax = 0.0, tkmax;
+    double Nt, kmax = 0.0, tkmax, tmax;
+    bool tmax_reached = 0;
     
     for (int jt = 0; jt < jtmax; jt++) {
         tmp[0] = t;
@@ -39,6 +40,11 @@ vector<double> averageevolution(function<double(double)> Gamma, const double tmi
             kmax = a*H;
             tkmax = t;
         }
+
+        if(F < 0.01 && tmax_reached == 0){
+            tmax = t;
+            tmax_reached = 1;
+        }
         
         // update the energy densities
         rhoV = F;
@@ -49,6 +55,7 @@ vector<double> averageevolution(function<double(double)> Gamma, const double tmi
     
     tmp[0] = kmax;
     tmp[1] = tkmax;
+    tmp[2] = tmax;
     
     return tmp;
 }
@@ -77,7 +84,7 @@ vector<vector<double> > rhoevolution(vector<vector<double> > &Ft, vector<vector<
     return rho;
 }
 
-// evolution of the Universe on average, returns kmax
+// evolution of the Universe on average, returns tk
 double findtk(double k, double tkmax, vector<vector<double> > &at, vector<vector<double> > &Ht) {
     
     vector<vector<double> > aH;
