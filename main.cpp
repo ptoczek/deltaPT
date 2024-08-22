@@ -21,16 +21,19 @@ int main (int argc, char *argv[]) {
     
     int jdmax = 100;
     int jtmax = 3200; // increase jtmax or decrease the t range for fast transitions
-    double tmin = -1.6; double tmax = 1.6;
-    double dt = (tmax-tmin)/(1.0*jtmax);
+    double tmin = -1.6;
+    double dt = 0.001;
    
     // average evolution
     vector<vector<double> > Ft, taut, at, Ht;
-    vector<double> tmp(2);
+    vector<double> tmp(3);
     tmp = averageevolution(Gamma, tmin, jtmax, dt, Ft, taut, at, Ht);
     
     double kmax = tmp[0];
     double tkmax = tmp[1];
+    double tmax = tmp[2];
+
+    dt = (tmax-tmin)/(1.0*jtmax);
     
     string filename, filename2, filename3;
     ofstream outfileF, outfileD, outfileT;
